@@ -119,6 +119,7 @@
 
         <!--Distance-->
         <LinearLayout
+            android:layout_marginBottom="@dimen/maigin"
             android:layout_marginLeft="@dimen/maigin"
             android:orientation="horizontal"
             android:layout_width="match_parent"
