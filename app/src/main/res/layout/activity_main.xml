@@ -32,6 +32,7 @@
 
            <!--Icon Add Map-->
            <ImageView
+               android:id="@+id/imvAddMaps"
                android:layout_alignParentRight="true"
                android:src="@mipmap/ic_add_map"
                android:layout_width="wrap_content"
