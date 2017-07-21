@@ -31,9 +31,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <!--Icon Add Map-->
+            <!--Icon Save-->
             <ImageView
-                android:id="@+id/imvAddMaps"
+                android:id="@+id/imvSave"
                 android:layout_alignParentRight="true"
                 android:src="@mipmap/ic_add_map"
                 android:layout_width="wrap_content"
@@ -81,6 +81,7 @@
                 android:textStyle="bold" />
 
             <EditText
+                android:id="@+id/edtName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                android:layout_marginRight="@dimen/maigin"
@@ -111,7 +112,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/textDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -140,7 +141,7 @@
                 android:textSize="@dimen/h2" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/txtDistance"
                 android:layout_width="18dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.20"
@@ -182,6 +183,7 @@
 
             <!--Icon Start-->
             <ImageView
+                android:id="@+id/imvStart"
                 android:src="@mipmap/ic_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -203,6 +205,7 @@
 
             <!--Icon Start-->
             <ImageView
+                android:id="@+id/imvStop"
                 android:src="@mipmap/ic_add_map"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
