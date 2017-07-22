@@ -195,6 +195,9 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+
+        <!--stop-->
+
         <LinearLayout
             android:layout_weight="1"
             android:gravity="center_horizontal"
@@ -213,6 +216,28 @@
             <TextView
                 android:textColor="@color/TextcolorPrimary"
                 android:text="Stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <!--Icon Start-->
+            <ImageView
+                android:id="@+id/imvRefresh"
+                android:src="@mipmap/ic_add_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textColor="@color/TextcolorPrimary"
+                android:text="Refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>

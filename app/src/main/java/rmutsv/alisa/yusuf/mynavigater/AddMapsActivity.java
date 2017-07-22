@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,7 +56,31 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         // Stop Controller
         stopController();
 
+        // Refresh Contoller
+        refreshContoller();
+
     }   // Main Method
+
+    private void refreshContoller() {
+        ImageView imageView = (ImageView) findViewById(R.id.imvRefresh);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Log.d(tag,"click ok ");
+
+                //Refresh Location
+                refreshLocation();
+
+                try {
+                    createCenterMap();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
 
     //นี่คือ เมทอด ที่หาระยะ ระหว่างจุด
     private static double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -63,7 +88,7 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515 * 1.609344;
+        dist = dist * 60 * 1.1515 * 1.609344 * 1000;
 
 
         return (dist);
@@ -110,6 +135,8 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
                 Log.d(tag, "Distance ==> " + distanceAdouble );
             } // For
             Log.d(tag, "Distance ==> " + distanceAdouble );
+            TextView textView = (TextView)findViewById(R.id.txtDistance);
+            textView.setText(Double.toString(distanceAdouble)+ " m. ");
 
 
         } catch (Exception e) {
@@ -152,7 +179,7 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
                     locationABoolean = false;
                     myLoop();
                 }
-            }, 3000);
+            }, 1000);
 
         }   // if
     }   // myLoop
