@@ -6,17 +6,23 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -24,6 +30,13 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
     private LocationManager locationManager;
     private Criteria criteria;
     private double latADouble = 7.087465, lngADouble = 100.245960;
+    private boolean statusABoolean = false, locationABoolean = false;
+    private double aDouble;
+    private double distanceAdouble = 0;
+    private String tag = "21julyV1",tag2 = "22julyV1";
+    private ArrayList<String> latStringArrayList;
+    private ArrayList<String> lngStringArrayList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +49,131 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         // Create Maps Fragment
         createMapsFragment();
 
+        // Start Controller
+        startController();
+
+        // Stop Controller
+        stopController();
+
     }   // Main Method
+
+    //นี่คือ เมทอด ที่หาระยะ ระหว่างจุด
+    private static double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515 * 1.609344;
+
+
+        return (dist);
+    }
+
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
+    }
+
+    private void stopController() {
+        ImageView imageView = (ImageView) findViewById(R.id.imvStop);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                statusABoolean = false;
+                calculateAllpoint();
+            }
+        });
+    }
+
+    private void calculateAllpoint() {
+
+        String tag = "22julyV2";
+        try {
+
+            String[] latStrings = new String[latStringArrayList.size()];
+            String[] lngStrings = new String[lngStringArrayList.size()];
+
+            latStrings = latStringArrayList.toArray(new String[0]);
+            lngStrings = lngStringArrayList.toArray(new String[0]);
+
+
+            for (int i=0; i<latStrings.length - 1; i+=1) {
+
+                distanceAdouble = distanceAdouble + distance(Double.parseDouble(latStrings[i]),
+                        Double.parseDouble(lngStrings[i]),
+                        Double.parseDouble(latStrings[i+1]),
+                        Double.parseDouble(lngStrings[i+1]));
+
+                Log.d(tag, "Distance ==> " + distanceAdouble );
+            } // For
+            Log.d(tag, "Distance ==> " + distanceAdouble );
+
+
+        } catch (Exception e) {
+            Log.d(tag, "e ==> " + e.toString());
+        }
+
+    }   // Calculate
+
+    private void startController() {
+        ImageView imageView = (ImageView) findViewById(R.id.imvStart);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                statusABoolean = true;
+                createMarker();
+
+                myLoop();
+            }
+        });
+    }
+
+    private void myLoop() {
+
+        if (statusABoolean) {
+
+            //ToDo
+            refreshLocation();
+
+            //add array
+            latStringArrayList.add(Double.toString(latADouble));
+            lngStringArrayList.add(Double.toString(lngADouble));
+            Log.d(tag, "latStringArray.size ==> "+ latStringArrayList.size());
+
+
+            //Delay
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    locationABoolean = false;
+                    myLoop();
+                }
+            }, 3000);
+
+        }   // if
+    }   // myLoop
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        //Refresh Location
+        refreshLocation();
+
+        try {
+            createCenterMap();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void refreshLocation() {
         locationManager.removeUpdates(locationListener);
 
         // For NetWork
@@ -59,12 +192,10 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
 
         // Show Log
         showLog();
-
-
     }
 
     private void showLog() {
-        String tag = "21julyV1";
+
         Log.d(tag, "Lat ==>" + latADouble);
         Log.d(tag, "Lnt ==>"+lngADouble);
     }
@@ -102,8 +233,19 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         @Override
         public void onLocationChanged(Location location) {
 
+            if (latADouble == location.getLatitude()) {
+                Log.d(tag, "Stable");
+            } else {
+                Log.d(tag, "Moved");
+                if (statusABoolean) {
+                    createMarker();
+                }
+            }
+
+
             latADouble = location.getLatitude();
             lngADouble = location.getLongitude();
+            Log.d(tag, "Location Change");
 
         }
 
@@ -123,12 +265,31 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         }
     };
 
+    private void createMarker() {
+
+        try {
+
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(new LatLng(latADouble, lngADouble))
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker));
+            mMap.addMarker(markerOptions);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }   // createMarker
+
     private void setupConstant() {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setAltitudeRequired(false);
         criteria.setBearingRequired(false);
+
+
+        latStringArrayList = new ArrayList<String>();
+        lngStringArrayList = new ArrayList<String>();
     }
 
     private void createMapsFragment() {
@@ -143,9 +304,13 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         mMap = googleMap;
 
         // Create Center Map
-        LatLng latLng = new LatLng(latADouble, lngADouble);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        createCenterMap();
 
 
     }   // onMapReady
+
+    private void createCenterMap() {
+        LatLng latLng = new LatLng(latADouble, lngADouble);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+    }
 }    // Main Class
