@@ -12,8 +12,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,7 +25,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -37,6 +42,7 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
     private String tag = "21julyV1", tag2 = "22JulyV1";
     private ArrayList<String> latStringArrayList;
     private ArrayList<String> lngStringArrayList;
+    private String nameMapString, dateString,distanceString, latString, lngString;
 
 
     @Override
@@ -59,8 +65,69 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         //Refresh Controller
         refreshController();
 
+        // Get Current Time
+        getCurrentTime();
+
+        // Save Controller
+        saveController();
+
 
     }   // Main Method
+
+    private void saveController() {
+        ImageView imageView = (ImageView) findViewById(R.id.imvSave);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                EditText editText = (EditText) findViewById(R.id.edtName);
+                nameMapString = editText.getText().toString().trim();
+
+                if (nameMapString.length() == 0) {
+                    Toast.makeText(AddMapsActivity.this,
+                            "Please Fill Name ", Toast.LENGTH_SHORT).show();
+                }
+
+                // Find Distance String
+                distanceString = Double.toString(distanceADouble);
+
+                // Find latString , lngString
+                latString = mySubString(latStringArrayList);
+                lngString = mySubString(lngStringArrayList);
+
+                // Show Log
+                String tag = "23julyV2";
+                Log.d(tag, "Name == >" + nameMapString);
+                Log.d(tag, "Date == >" + dateString);
+                Log.d(tag, "Distance == >" + distanceString);
+                Log.d(tag, "latString == >" + latString);
+                Log.d(tag, "lngString == >" + lngString);
+
+
+            }
+        });
+    }
+
+    private String mySubString(ArrayList<String> stringArrayList) {
+
+        String result = null;
+
+        result = stringArrayList.toString();
+        int i = result.length() - 1;
+        result = result.substring(1, i);
+
+
+        return result;
+    }
+
+    private void getCurrentTime() {
+        Calendar calendar = Calendar.getInstance();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateString = dateFormat.format(calendar.getTime());
+        TextView textView = (TextView) findViewById(R.id.textDate);
+        textView.setText(dateString);
+
+    }
 
     private void refreshController() {
         ImageView imageView = (ImageView) findViewById(R.id.imvRefresh);
