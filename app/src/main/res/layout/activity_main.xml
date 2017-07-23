@@ -45,6 +45,11 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <!--Content-->
+    <ListView
+        android:id="@+id/livMap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 
 
 
