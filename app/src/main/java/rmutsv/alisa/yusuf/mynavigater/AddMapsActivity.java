@@ -1,6 +1,7 @@
 package rmutsv.alisa.yusuf.mynavigater;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -83,10 +84,7 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
                 EditText editText = (EditText) findViewById(R.id.edtName);
                 nameMapString = editText.getText().toString().trim();
 
-                if (nameMapString.length() == 0) {
-                    Toast.makeText(AddMapsActivity.this,
-                            "Please Fill Name ", Toast.LENGTH_SHORT).show();
-                }
+
 
                 // Find Distance String
                 distanceString = Double.toString(distanceADouble);
@@ -102,6 +100,21 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
                 Log.d(tag, "Distance == >" + distanceString);
                 Log.d(tag, "latString == >" + latString);
                 Log.d(tag, "lngString == >" + lngString);
+
+
+                if (nameMapString.length() == 0) {
+                    Toast.makeText(AddMapsActivity.this,
+                            "Please Fill Name ", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    MyManage myManage = new MyManage(AddMapsActivity.this);
+                    myManage.addValuToSQLite(nameMapString, dateString, distanceString,
+                            latString, lngString);
+                    Intent intent = new Intent(AddMapsActivity.this, MainActivity.class);
+                    setResult(100, intent);
+                    finish();
+
+                }
 
 
             }
