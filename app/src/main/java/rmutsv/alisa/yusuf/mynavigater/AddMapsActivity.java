@@ -33,8 +33,8 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
     private double latADouble = 7.087465, lngADouble = 100.245960;
     private boolean statusABoolean = false, locationABoolean = false;
     private double aDouble;
-    private double distanceAdouble = 0;
-    private String tag = "21julyV1",tag2 = "22julyV1";
+    private double distanceADouble = 0;
+    private String tag = "21julyV1", tag2 = "22JulyV1";
     private ArrayList<String> latStringArrayList;
     private ArrayList<String> lngStringArrayList;
 
@@ -56,18 +56,17 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         // Stop Controller
         stopController();
 
-        // Refresh Contoller
-        refreshContoller();
+        //Refresh Controller
+        refreshController();
+
 
     }   // Main Method
 
-    private void refreshContoller() {
+    private void refreshController() {
         ImageView imageView = (ImageView) findViewById(R.id.imvRefresh);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Log.d(tag,"click ok ");
 
                 //Refresh Location
                 refreshLocation();
@@ -81,6 +80,7 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
             }
         });
     }
+
 
     //นี่คือ เมทอด ที่หาระยะ ระหว่างจุด
     private static double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -102,20 +102,25 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         return (rad * 180 / Math.PI);
     }
 
+
+
+
     private void stopController() {
         ImageView imageView = (ImageView) findViewById(R.id.imvStop);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 statusABoolean = false;
-                calculateAllpoint();
+                calculateAllPoint();
             }
         });
     }
 
-    private void calculateAllpoint() {
+    private void calculateAllPoint() {
 
-        String tag = "22julyV2";
+        String tag = "22JulyV2";
+
+
         try {
 
             String[] latStrings = new String[latStringArrayList.size()];
@@ -127,16 +132,19 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
 
             for (int i=0; i<latStrings.length - 1; i+=1) {
 
-                distanceAdouble = distanceAdouble + distance(Double.parseDouble(latStrings[i]),
+
+                distanceADouble = distanceADouble + distance(Double.parseDouble(latStrings[i]),
                         Double.parseDouble(lngStrings[i]),
                         Double.parseDouble(latStrings[i+1]),
                         Double.parseDouble(lngStrings[i+1]));
 
-                Log.d(tag, "Distance ==> " + distanceAdouble );
-            } // For
-            Log.d(tag, "Distance ==> " + distanceAdouble );
-            TextView textView = (TextView)findViewById(R.id.txtDistance);
-            textView.setText(Double.toString(distanceAdouble)+ " m. ");
+                Log.d(tag, "Distance in For ==> " + distanceADouble);
+
+            }   // for
+
+            Log.d(tag, "Distance ==> " + distanceADouble);
+            TextView textView = (TextView) findViewById(R.id.txtDistance);
+            textView.setText(Double.toString(distanceADouble) + " m.");
 
 
         } catch (Exception e) {
@@ -165,11 +173,10 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
             //ToDo
             refreshLocation();
 
-            //add array
+            //Add Array
             latStringArrayList.add(Double.toString(latADouble));
             lngStringArrayList.add(Double.toString(lngADouble));
-            Log.d(tag, "latStringArray.size ==> "+ latStringArrayList.size());
-
+            Log.d(tag, "latStringArray.size ==> " + latStringArrayList.size());
 
             //Delay
             Handler handler = new Handler();
@@ -314,9 +321,9 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
         criteria.setAltitudeRequired(false);
         criteria.setBearingRequired(false);
 
-
         latStringArrayList = new ArrayList<String>();
         lngStringArrayList = new ArrayList<String>();
+
     }
 
     private void createMapsFragment() {
